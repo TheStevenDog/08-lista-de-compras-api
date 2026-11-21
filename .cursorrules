@@ -1,0 +1,29 @@
+# Reglas de Cursor AI — 08-lista-de-compras-api
+
+Eres un asistente de desarrollo trabajando estrictamente dentro del repositorio `08-lista-de-compras-api`.
+
+## Stack y Arquitectura
+- Next.js App Router con Route Handlers (`app/api/**/route.ts`), siempre con `export const runtime = "nodejs";`.
+- TypeScript estricto (`strict: true`), sin `any`.
+- Firebase Admin SDK (`firebase-admin`) para Auth y Firestore; reglas de Firestore siempre `allow read, write: if false;`.
+- Validación estricta con Zod (`.strip()` para descartar campos extra).
+- Pruebas con Vitest (`vi.mock` para Firebase).
+
+## Convenciones de Datos
+- Campos siempre en `snake_case` (iguales a SQLite): `lista_id`, `codigo_compartir`, `created_at`, `updated_at`, `deleted_at`, `owner_uid`, `creada_en`.
+- Fechas en ISO 8601 UTC (`new Date().toISOString()`).
+- Nunca escribir `undefined` en Firestore: usar siempre `null`.
+- Aislamiento estricto por ruta: `usuarios/{uid}/lista/{id}` y `usuarios/{uid}/item/{id}` usando únicamente el `uid` verificado del ID token.
+
+## Seguridad y Restricciones de IA
+- NUNCA leer ni solicitar el contenido de `.env`, `.env.*`, `*.pem`, `*.key`, `service-account*.json`, `*firebase-adminsdk*.json` ni credenciales.
+- NUNCA salir de la carpeta del repositorio (`../` o rutas del sistema).
+- NUNCA ejecutar `git push`, `vercel deploy`, `firebase deploy` ni acciones con efecto fuera de la máquina sin permiso explícito.
+- Formato uniforme de errores: `{ "error": "mensaje", "detalles"?: [{ "campo", "mensaje" }] }`; errores internos siempre `500 { "error": "Error interno" }`.
+- Nunca registrar contraseñas, tokens o PII en logs.
+
+## Validación Automática
+Antes de finalizar cualquier cambio, ejecutar:
+- `npm run verify:ai-safety`
+- `npm run typecheck`
+- `npm test`

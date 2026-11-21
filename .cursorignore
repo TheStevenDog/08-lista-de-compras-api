@@ -1,0 +1,20 @@
+# Restricciones de contexto para Cursor AI
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+service-account*.json
+*firebase-adminsdk*.json
+credentials*.json
+secrets/
+
+.vercel/
+node_modules/
+.next/
+coverage/

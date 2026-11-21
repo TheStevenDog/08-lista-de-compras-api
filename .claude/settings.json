@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Edit(.env)",
+      "Edit(.env.*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Read(*.pem)",
+      "Read(**/*.pem)",
+      "Read(*.key)",
+      "Read(**/*.key)",
+      "Read(*.p12)",
+      "Read(*.keystore)",
+      "Read(*.jks)",
+      "Read(*service-account*.json)",
+      "Read(**/*service-account*.json)",
+      "Read(*firebase-adminsdk*.json)",
+      "Read(**/*firebase-adminsdk*.json)",
+      "Read(*credentials*.json)",
+      "Read(secrets/**)",
+      "Read(../*)",
+      "Read(../**)",
+      "Edit(../*)",
+      "Write(../*)",
+      "Bash(cat .env*)",
+      "Bash(type .env*)",
+      "Bash(Get-Content *.env*)",
+      "Bash(printenv*)",
+      "Bash(env)",
+      "Bash(cd ..*)"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(vercel*)",
+      "Bash(npx vercel*)",
+      "Bash(firebase deploy*)",
+      "Bash(npx firebase*)",
+      "Bash(npm publish*)",
+      "Bash(curl *)",
+      "Bash(Invoke-WebRequest *)",
+      "Bash(Invoke-RestMethod *)"
+    ]
+  }
+}
