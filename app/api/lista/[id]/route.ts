@@ -1,0 +1,117 @@
+import { NextResponse } from "next/server";
+import { requireAuth } from "@/src/lib/authMiddleware";
+import {
+  internalErrorResponse,
+  jsonError,
+  parseJsonBody,
+  zodErrorResponse,
+} from "@/src/lib/errors";
+import { getAdminDb } from "@/src/lib/firebaseAdmin";
+import { listaPutSchema, resourceIdSchema } from "@/src/lib/schemas";
+
+export const runtime = "nodejs";
+
+interface RouteContext {
+  params: Promise<{ id: string }>;
+}
+
+export async function PUT(request: Request, context: RouteContext) {
+  const auth = await requireAuth(request);
+  if (!auth.ok) return auth.response;
+
+  const { id } = await context.params;
+  const parsedId = resourceIdSchema.safeParse(id);
+  if (!parsedId.success) {
+    return zodErrorResponse(parsedId.error);
+  }
+
+  const body = await parseJsonBody(request);
+  if (!body.ok) return body.response;
+
+  const parsedBody = listaPutSchema.safeParse(body.data);
+  if (!parsedBody.success) {
+    return zodErrorResponse(parsedBody.error);
+  }
+
+  try {
+    const db = getAdminDb();
+    const docRef = db
+      .collection("usuarios")
+      .doc(auth.user.uid)
+      .collection("lista")
+      .doc(parsedId.data);
+
+    const existingSnap = await docRef.get();
+    const existingData = existingSnap.exists ? existingSnap.data() : undefined;
+    const now = new Date().toISOString();
+
+    const createdAt =
+      typeof existingData?.["created_at"] === "string" ? existingData["created_at"] : now;
+
+    const existingCodigo =
+      typeof existingData?.["codigo_compartir"] === "string"
+        ? existingData["codigo_compartir"]
+        : null;
+
+    const codigoCompartir =
+      parsedBody.data.codigo_compartir !== undefined
+        ? parsedBody.data.codigo_compartir
+        : existingCodigo;
+
+    const docData = {
+      nombre: parsedBody.data.nombre,
+      cerrada: parsedBody.data.cerrada,
+      codigo_compartir: codigoCompartir ?? null,
+      created_at: createdAt,
+      updated_at: now,
+      deleted_at: null as string | null,
+    };
+
+    await docRef.set(docData);
+
+    return NextResponse.json(
+      {
+        id: parsedId.data,
+        ...docData,
+      },
+      { status: 200 }
+    );
+  } catch {
+    return internalErrorResponse();
+  }
+}
+
+export async function DELETE(request: Request, context: RouteContext) {
+  const auth = await requireAuth(request);
+  if (!auth.ok) return auth.response;
+
+  const { id } = await context.params;
+  const parsedId = resourceIdSchema.safeParse(id);
+  if (!parsedId.success) {
+    return zodErrorResponse(parsedId.error);
+  }
+
+  try {
+    const db = getAdminDb();
+    const docRef = db
+      .collection("usuarios")
+      .doc(auth.user.uid)
+      .collection("lista")
+      .doc(parsedId.data);
+
+    const existingSnap = await docRef.get();
+    if (!existingSnap.exists) {
+      return jsonError(404, "Lista no encontrada");
+    }
+
+    const now = new Date().toISOString();
+    await docRef.update({
+      deleted_at: now,
+      updated_at: now,
+    });
+
+    return NextResponse.json({ ok: true }, { status: 200 });
+  } catch {
+    return internalErrorResponse();
+  }
+}
