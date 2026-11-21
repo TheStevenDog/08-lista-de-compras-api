@@ -60,7 +60,8 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
+    console.error("GET /api/lista error:", err);
     return internalErrorResponse();
   }
 }

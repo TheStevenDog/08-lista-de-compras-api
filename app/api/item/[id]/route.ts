@@ -68,7 +68,8 @@ export async function PUT(request: Request, context: RouteContext) {
       },
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
+    console.error("PUT /api/item/[id] error:", err);
     return internalErrorResponse();
   }
 }
@@ -103,7 +104,8 @@ export async function DELETE(request: Request, context: RouteContext) {
     });
 
     return NextResponse.json({ ok: true }, { status: 200 });
-  } catch {
+  } catch (err) {
+    console.error("PUT /api/item/[id] error:", err);
     return internalErrorResponse();
   }
 }

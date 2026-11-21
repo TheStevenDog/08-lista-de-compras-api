@@ -61,7 +61,8 @@ export async function GET(request: Request) {
       },
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
+    console.error("GET /api/item error:", err);
     return internalErrorResponse();
   }
 }
