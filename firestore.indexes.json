@@ -1,0 +1,29 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "item",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lista_id", "order": "ASCENDING" },
+        { "fieldPath": "deleted_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "item",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lista_id", "order": "ASCENDING" },
+        { "fieldPath": "updated_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "lista",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cerrada", "order": "ASCENDING" },
+        { "fieldPath": "updated_at", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

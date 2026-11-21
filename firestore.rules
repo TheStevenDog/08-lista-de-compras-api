@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Acceso exclusivo desde la API mediante Firebase Admin SDK.
+    // Ningún cliente puede leer ni escribir directamente en Firestore.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
